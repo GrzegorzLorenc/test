@@ -1,0 +1,154 @@
+water_machine = 400
+milk_machine = 540
+coffee_machine = 120
+disposable_cups = 9
+money_machine = 550
+choice = 0
+
+
+def menu():
+    global choice
+    print('Write action (buy, fill, take, remaining, exit):')
+    choice = input()
+
+
+def show_supplies():
+    print('The coffee machine has:')
+    print(str(water_machine) + ' of water')
+    print(str(milk_machine) + ' of milk')
+    print(str(coffee_machine) + ' of coffee beans')
+    print(str(disposable_cups) + ' of disposable cups')
+    print(str(money_machine) + ' of money')
+    print('')
+
+
+def check_resources_espresso():
+    global choice
+    global water_machine
+    global coffee_machine
+    global disposable_cups
+    global money_machine
+    if water_machine < 250:
+        print('Sorry, not enough water')
+        menu()
+    elif coffee_machine < 16:
+        print('Sorry, not enough coffee')
+        menu()
+    elif disposable_cups < 1:
+        print('Sorry, not enough cups')
+        menu()
+    else:
+        print('I have enough resources, making you a coffee!')
+        water_machine -= 250
+        coffee_machine -= 16
+        disposable_cups -= 1
+        money_machine += 4
+        menu()
+
+
+def check_resources_latte():
+    global choice
+    global water_machine
+    global milk_machine
+    global coffee_machine
+    global disposable_cups
+    global money_machine
+    if water_machine < 350:
+        print('Sorry, not enough water')
+        menu()
+    elif milk_machine < 75:
+        print('Sorry, not enough milk')
+        menu()
+    elif coffee_machine < 20:
+        print('Sorry, not enough coffee')
+        menu()
+    elif disposable_cups < 1:
+        print('Sorry, not enough cups')
+        menu()
+    else:
+        print('I have enough resources, making you a coffee!')
+        water_machine -= 350
+        milk_machine -= 75
+        coffee_machine -= 20
+        disposable_cups -= 1
+        money_machine += 7
+        menu()
+
+
+def check_resources_cappucino():
+    global choice
+    global water_machine
+    global milk_machine
+    global coffee_machine
+    global disposable_cups
+    global money_machine
+    if water_machine < 350:
+        print('Sorry, not enough water')
+        menu()
+    elif milk_machine < 75:
+        print('Sorry, not enough milk')
+        menu()
+    elif coffee_machine < 20:
+        print('Sorry, not enough coffee')
+        menu()
+    elif disposable_cups < 1:
+        print('Sorry, not enough cups')
+        menu()
+    else:
+        print('I have enough resources, making you a coffee!')
+        water_machine -= 200
+        milk_machine -= 100
+        coffee_machine -= 12
+        disposable_cups -= 1
+        money_machine += 6
+        menu()
+
+
+def take_money():
+    global choice
+    global money_machine
+    print('I gave you $' + str(money_machine))
+    money_machine = 0
+    menu()
+
+
+def fill_machine():
+    print('Write how many ml of water do you want to add:')
+    global water_machine
+    water_machine += (int(input()))
+    print('Write how many ml of milk do you want to add:')
+    global milk_machine
+    milk_machine += (int(input()))
+    print('Write how many grams of coffee beans do you want to add:')
+    global coffee_machine
+    coffee_machine += (int(input()))
+    print('Write how disposable cups do you want to add:')
+    global disposable_cups
+    disposable_cups += (int(input()))
+
+
+menu()
+while True:
+    if choice == 'buy':
+        print('What do you want to buy? 1 - espresso, 2 - latte, 3 - cappucino, back - to main menu:')
+        choice = input()
+        if choice == '1':
+            check_resources_espresso()
+        elif choice == '2':
+            check_resources_latte()
+        elif choice == '3':
+            check_resources_cappucino()
+        elif choice == 'back':
+            menu()
+    elif choice == 'fill':
+        fill_machine()
+        menu()
+    elif choice == 'take':
+        take_money()
+        show_supplies()
+        menu()
+    elif choice == 'remaining':
+        show_supplies()
+        menu()
+    elif choice == 'exit':
+        break
