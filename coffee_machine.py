@@ -6,6 +6,8 @@ class CoffeeMachine:
         self.disposable_cups = 9
         self.money_machine = 550
         self.machine_state = 'default state'
+        self.filling_state = 1
+        self.type_of_coffee_chosen = 0
         self.menu()
 
     def menu(self):  # noinspection PyMethodMayBeStatic
@@ -13,20 +15,46 @@ class CoffeeMachine:
 
     def main_method(self, user_choice):
         if self.machine_state == 'default state':
-            if user_choice == "menu":
-                if user_choice == "buy":
-                    self.machine_state = "buying_coffee"
-                    print('What do you want to buy? 1 - espresso, 2 - latte, 3 - cappucino, back - to main menu:')
-                elif user_choice == 'fill':
-                    self.machine_state = 'refilling'
-                elif user_choice == 'take':
-                    self.machine_state = 'taking'
-                elif user_choice == 'remaining':
-                    self.show_supplies()
-                    self.menu()
-            elif self.machine_state == "off":
+            if user_choice == "buy":
+                self.machine_state = "buying coffee"
+                print('What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:')
+            elif user_choice == 'fill':
+                self.machine_state = 'refilling'
+                print("Write how many ml of water do you want to add:")
+            elif user_choice == 'take':
+                self.take_money()
+                self.menu()
+            elif user_choice == 'remaining':
+                self.show_supplies()
+                self.menu()
+            elif self.machine_state == 'refilling':
                 print("Turning the light on")
                 self.machine_state = "on"
+        elif self.machine_state == "refilling":
+            if self.filling_state == 1:
+                self.water_machine += int(user_choice)
+                print("Write how many ml of milk do you want to add:")
+                self.filling_state = 2
+            elif self.filling_state == 2:
+                print("Write how many grams of coffee beans do you want to add:")
+                self.milk_machine += int(user_choice)
+                self.filling_state = 3
+            elif self.filling_state == 3:
+                print("Write how many disposable cups of coffee do you want to add:")
+                self.coffee_machine += int(user_choice)
+                self.filling_state = 4
+            elif self.filling_state == 4:
+                self.disposable_cups += int(user_choice)
+                self.filling_state = 1
+                self.machine_state = "default state"
+                self.menu()
+        elif self.machine_state == "buying coffee":
+            if user_choice == "back":
+                self.machine_state = "default state"
+                self.menu()
+            elif user_choice == "1" or user_choice == "2" or user_choice == "3":
+                self.type_of_coffee_chosen = int(user_choice)
+                self.resource_check()
 
     def show_supplies(self):
         print('The coffee machine has:')
@@ -37,72 +65,40 @@ class CoffeeMachine:
         print(f'{self.money_machine} of money')
         print('')
 
-    def check_resources_espresso(self):
-        if self.water_machine < 250:
-            print('Sorry, not enough water')
-            self.menu()
-        elif self.coffee_machine < 16:
-            print('Sorry, not enough coffee')
-            self.menu()
-        elif self.disposable_cups < 1:
-            print('Sorry, not enough cups')
-            self.menu()
-        else:
-            print('I have enough resources, making you a coffee!')
-            self.water_machine -= 250
-            self.coffee_machine -= 16
-            self.disposable_cups -= 1
-            self.money_machine += 4
-            self.menu()
+    def resource_check(self):
+        menu = {1: {"water": 250, "milk": 0, "coffee_bean": 16, "cup": 1, "money": 4},
+                2: {"water": 350, "milk": 75, "coffee_bean": 20, "cup": 1, "money": 7},
+                3: {"water": 200, "milk": 100, "coffee_bean": 12, "cup": 1, "money": 6}, }
 
-    def check_resources_latte(self):
-        if self.water_machine < 350:
-            print('Sorry, not enough water')
+        if self.water_machine < menu[self.type_of_coffee_chosen]["water"]:
+            print("Sorry, not enough water!")
+            self.machine_state = "default state"
             self.menu()
-        elif self.milk_machine < 75:
-            print('Sorry, not enough milk')
+        elif self.milk_machine < menu[self.type_of_coffee_chosen]["milk"]:
+            print("Sorry, not enough milk!")
+            self.machine_state = "default state"
             self.menu()
-        elif self.coffee_machine < 20:
-            print('Sorry, not enough coffee')
+        elif self.coffee_machine < menu[self.type_of_coffee_chosen]["coffee_bean"]:
+            print("Sorry, not enough coffee beans")
+            self.machine_state = "default state"
             self.menu()
-        elif self.disposable_cups < 1:
-            print('Sorry, not enough cups')
-            self.menu()
-        else:
-            print('I have enough resources, making you a coffee!')
-            self.water_machine -= 350
-            self.milk_machine -= 75
-            self.coffee_machine -= 20
-            self.disposable_cups -= 1
-            self.money_machine += 7
-            self.menu()
-
-    def check_resources_cappuccino(self):
-        if self.water_machine < 350:
-            print('Sorry, not enough water')
-            self.menu()
-        elif self.milk_machine < 75:
-            print('Sorry, not enough milk')
-            self.menu()
-        elif self.coffee_machine < 20:
-            print('Sorry, not enough coffee')
-            self.menu()
-        elif self.disposable_cups < 1:
-            print('Sorry, not enough cups')
+        elif self.disposable_cups < menu[self.type_of_coffee_chosen]["cup"]:
+            print("Sorry, not enough cup")
+            self.machine_state = "default state"
             self.menu()
         else:
-            print('I have enough resources, making you a coffee!')
-            self.water_machine -= 200
-            self.milk_machine -= 100
-            self.coffee_machine -= 12
-            self.disposable_cups -= 1
-            self.money_machine += 6
+            print("I have enough resources, making you a coffee!")
+            self.water_machine -= menu[self.type_of_coffee_chosen]["water"]
+            self.milk_machine -= menu[self.type_of_coffee_chosen]["milk"]
+            self.coffee_machine -= menu[self.type_of_coffee_chosen]["coffee_bean"]
+            self.disposable_cups -= menu[self.type_of_coffee_chosen]["cup"]
+            self.money_machine += menu[self.type_of_coffee_chosen]["money"]
+            self.machine_state = "default state"
             self.menu()
 
     def take_money(self):
         print(f'I gave you $ {self.money_machine}')
         self.money_machine = 0
-        self.menu()
 
     def fill_machine(self):
         print('Write how many ml of water do you want to add:')
@@ -115,35 +111,10 @@ class CoffeeMachine:
         self.disposable_cups += (int(input()))
 
 
-CoffeeMachine()
-user_input = input()
+cafe = CoffeeMachine()
+
 while True:
+    user_input = input()
+    cafe.main_method(user_input)
     if user_input == 'exit':
         break
-
-
-# menu()
-# while True:
-#     if choice == 'buy':
-#         print('What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:')
-#         choice = input()
-#         if choice == '1':
-#             check_resources_espresso()
-#         elif choice == '2':
-#             check_resources_latte()
-#         elif choice == '3':
-#             check_resources_cappuccino()
-#         elif choice == 'back':
-#             menu()
-#     elif choice == 'fill':
-#         fill_machine()
-#         menu()
-#     elif choice == 'take':
-#         take_money()
-#         show_supplies()
-#         menu()
-#     elif choice == 'remaining':
-#         show_supplies()
-#         menu()
-#     elif choice == 'exit':
-#         break
