@@ -1,0 +1,53 @@
+cc_number = str(input("Enter CC number: "))
+digits = []
+even = []
+even_multiplied = 0
+odd = []
+
+for item in cc_number:
+    digits.append(int(item))
+
+digits = digits[::-1]
+
+for i in range(len(digits)):
+    if i % 2 == 0:
+        odd.append(digits[i])
+        # print(f'{digits[i]} not multi')
+    else:
+        even.append(str(digits[i] * 2))
+        # print(f'{digits[i] * 2} multi {even}')
+
+odd = sum(odd)
+
+for number in even:
+    if int(number) > 9:
+        even_multiplied += int(number[0]) + int(number[1])
+    else:
+        even_multiplied += int(number[0])
+
+ccLength = int(len(cc_number))
+totalSum = even_multiplied + odd
+ccFirstDigit = int(cc_number[0])
+ccSecondDigit = int(cc_number[1])
+
+if totalSum % 10 == 0:
+    if ccFirstDigit == 4 and (ccLength == 13 or ccLength == 16):
+        print("VISA")
+    elif ccFirstDigit == 3 and ccLength == 15 and (ccSecondDigit == 4 or ccSecondDigit == 7):
+        print("AMEX")
+    elif ccFirstDigit == 5 and (ccSecondDigit == 1 or ccSecondDigit == 2 or ccSecondDigit == 3 or ccSecondDigit == 4 or ccSecondDigit == 5) and ccLength == 16:
+        print("MASTERCARD")
+    else:
+        print("INVALID1")
+else:
+
+    print("INVALID")
+
+
+# print(f'{ccFirstDigit} {ccSecondDigit} {ccLength}')
+
+# print(f'{totalSum} total')
+# # print(digits)
+# print(f'{even} multi')
+# print(f'{odd} sum not multiplied partial')
+# print(f'{even_multiplied} sum after multiplication partial')
